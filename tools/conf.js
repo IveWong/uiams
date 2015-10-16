@@ -156,10 +156,10 @@ const clientConf = merge({}, commonConf, {
 });
 
 const serverConf = merge({}, commonConf, {
-	entry: './src/server.js',
+	entry: './httpServer/render.js',
   output: {
     path: './build',
-    filename: 'server.js',
+    filename: 'render.js',
     libraryTarget: 'commonjs2',
   },
   target: 'node',

@@ -10,4 +10,4 @@ var ReactDOMServer = require('react-dom/server');
 var Index = require('../src/layout/Index');
 // var Router = require('react-routing/src/Router');
 
-var render = module.exports = ReactDOMServer.renderToString(Index);
+var render = module.exports = ReactDOMServer.renderToString(<Index />);

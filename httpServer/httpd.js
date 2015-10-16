@@ -6,7 +6,7 @@
  */
 
 var koa = require('koa');
-var render = require('./render');
+var render = require('../build/render');
 var SERVERCONF = require('./conf');
 
 var httpd = module.exports = koa();

@@ -23,9 +23,9 @@ export default task('buildClient', async () => {
       return reject(err);
     }
 
-    console.log(stats.toString(config[0].stats));
+    console.log(stats.toString(conf[0].stats));
 
-    if (++bundlerRunCount === (global.WATCH ? config.length : 1)) {
+    if (++bundlerRunCount === (global.WATCH ? conf.length : 1)) {
       return resolve();
     }
   }

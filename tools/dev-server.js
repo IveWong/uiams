@@ -10,15 +10,16 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import task from './lib/task';
+import fs from './lib/fs';
 import { _client_conf, _server_conf, _browsersync_conf } from './conf';
 
 global.WATCH = true;
 const bundler = webpack(_client_conf);
 
 export default task('startd', async () => {
-
-	await require('./buildRender')();
-	await require('./buildClient')();
+ //  await fs.makeDir('build/public');
+	// await require('./buildRender')();
+	// await require('./buildClient')();
 
 	browserSync({
   	proxy: {
