@@ -1,2 +1,10 @@
 # uiams
-UI Automation Management System
+##UI Automation Management System
+
+##Workflow
+
++-----+     +------+
+|     |     |      |
+|httpd| --> |router| -> |render| =>
+|     |     |      |
++-----+     +------+
