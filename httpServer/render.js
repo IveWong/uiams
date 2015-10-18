@@ -6,8 +6,15 @@
  */
 
 require('babel-core/polyfill');
+var React = require('react');
 var ReactDOMServer = require('react-dom/server');
-var Index = require('../src/layout/Index');
+var Index = require('../build/Index');
+// var Index = require('../src/layout/Index');
 // var Router = require('react-routing/src/Router');
 
-var render = module.exports = ReactDOMServer.renderToString(<Index />);
+module.exports = function render(){
+	return function * (next) {
+    this.body = ReactDOMServer.renderToString(<Index />);
+    yield * next
+  }
+};
