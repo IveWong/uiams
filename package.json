@@ -10,30 +10,35 @@
   "repository": "https://github.com/ivewong/uiams",
   "bugs": "https://github.com/IveWong/uiams/issues",
   "dependencies": {
+    "babel-core": "5.8.25",
     "koa": "^1.0.0",
     "react": "^0.14.0-rc1",
     "react-dom": "^0.14.0-rc1",
-    "babel-core": "5.8.25",
+    "react-routing": "0.0.4",
     "source-map-support": "0.3.2"
   },
   "devDependencies": {
     "babelify": "^6.1.2",
     "browser-sync": "^2.9.7",
+    "browserify": "^11.2.0",
+    "watchify": "^3.4.0",
     "del": "^2.0.2",
     "gulp": "^3.0.1",
     "gulp-babel": "^5.3.0",
     "koa": "^1.0.0",
     "lodash.merge": "^3.3.2",
     "mkdirp": "^0.5.1",
+    "gulp-notify": "^2.2.0",
     "react": "^0.14.0-rc1",
     "react-dom": "^0.14.0-rc1",
+    "vinyl-source-stream": "^1.1.0",
     "webpack": "^1.12.2",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.3.0"
   },
   "scripts": {
-    "build": "gulp",
-    "start": "babel-node --eval \"require('./tools/dev-server')().catch(err => console.error(err.stack))\"",
+    "start": "gulp",
+    "build": "babel-node --eval \"require('./tools/dev-server')().catch(err => console.error(err.stack))\"",
     "test": "make test"
   },
   "license": "GNU"

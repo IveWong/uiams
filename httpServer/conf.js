@@ -5,6 +5,11 @@
  * MIT Licensed
  */
 
-var SERVERCONF = module.exports = {
-	port: 3000,
+module.exports = {
+	server: {
+		port: 5000
+	},
+	router: {
+		rootPath: 'src/layout'
+	}
 };

@@ -8,8 +8,6 @@
 import 'babel-core/polyfill';
 import React, { Component, PropTypes } from 'react'; 
 
-export default Index;
-
 class Index extends Component {
 
   static propTypes = {
@@ -27,3 +25,5 @@ class Index extends Component {
   }
 
 }
+
+export default Index;

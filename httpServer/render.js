@@ -6,6 +6,7 @@
  */
 
 require('babel-core/polyfill');
+var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var Index = require('../build/Index');
@@ -14,7 +15,13 @@ var Index = require('../build/Index');
 
 module.exports = function render(){
 	return function * (next) {
+		var _file;
+		fs.readdir('src/layout', function(err, file){
+			// console.log(file);
+			if (!err) _file = file;
+		})
     this.body = ReactDOMServer.renderToString(<Index />);
+    // this.body = _file;
     yield * next
   }
 };

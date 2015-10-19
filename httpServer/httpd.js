@@ -7,10 +7,13 @@
 
 var koa = require('koa');
 var render = require('../build/render');
-var SERVERCONF = require('./conf');
+var router = require('../build/router');
+var sevconf = require('./conf').server;
 
 var httpd = module.exports = koa();
 
+httpd.use(router());
 httpd.use(render());
 
-if (!module.parent) httpd.listen(SERVERCONF.port);
+if (!module.parent) httpd.listen(sevconf.port);
+console.log('[Success] HTTP Server is runing at http://localhost:' + sevconf.port);
