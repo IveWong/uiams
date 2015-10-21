@@ -5,7 +5,6 @@
  * MIT Licensed
  */
 
-import 'babel-core/polyfill';
 import React, { Component, PropTypes } from 'react'; 
 
 class HomePage extends Component {

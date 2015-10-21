@@ -6,14 +6,12 @@
  */
 
 var koa = require('koa');
-var render = require('../build/render');
-var router = require('../build/router');
+var reactRender = require('./reactRender');
 var sevconf = require('./conf').server;
 
 var httpd = module.exports = koa();
 
-httpd.use(router());
-httpd.use(render());
+httpd.use(reactRender());
 
 if (!module.parent) httpd.listen(sevconf.port);
 console.log('[Success] HTTP Server is runing at http://localhost:' + sevconf.port);

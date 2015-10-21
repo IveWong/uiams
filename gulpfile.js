@@ -23,8 +23,10 @@ var fs = require('fs');
 var path = require('path');
 var browserSync = require('browser-sync');
 var browserify = require('browserify');
+var cp = require('child_process');
 var watchify = require('watchify');
 var source = require('vinyl-source-stream');
+var babel = require('gulp-babel');
 var babelify = require('babelify');
 var notify = require('gulp-notify');
 var less = require('gulp-less');
@@ -104,6 +106,24 @@ gulp.task('browserifyCode', function(callback){
 
 gulp.task('buildPage', ['browserifyCode']);
 
+gulp.task('buildReactHandle', function(){
+	browserify(buildconf._reacthandle.entries)
+		.transform(babelify)
+		.bundle()
+		.on('error', function(){
+			var args = Array.prototype.slice.call(arguments);
+
+			notify.onError({
+				title: "Compile Error",
+				message: "<%= error.message %>"
+			}).apply(this, args);
+
+			this.emit('end');
+		})
+		.pipe(source(buildconf._reacthandle.outputName))
+		.pipe(gulp.dest(buildconf._reacthandle.outDir));
+})
+
 // gulp.task('runBrowserSync', ['buildPage'], function(){
 // 	browserSync(config.browserSync);
 // })
@@ -145,4 +165,8 @@ gulp.task('buildPage', ['browserifyCode']);
 // 	gulp.watch(config.app.src);
 // })
 
-gulp.task('default', ['buildPage']);
+gulp.task('default', ['buildPage'], function(){
+	cp.fork('httpServer/httpd.js', {
+		silent: false
+	});
+});

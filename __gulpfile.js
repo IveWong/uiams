@@ -1,67 +1,66 @@
-/*!
- * httpd
- * Copyright(c) 2015 Ive Wang
- * Copyright(c) 2015 Jnfinity. All rights reserved.
- * MIT Licensed
- */
-
+var config = {
+	global: {
+		isWatching: true,
+		isMinifyCSS: false
+	},
+	browserSync: {
+		server: {
+			baseDir: ['./build', './app']
+		},
+		files: ['./build/**']
+	},
+	app: {
+		src: './app/**',
+		build: './build'
+	},
+	markup: {
+		web: './app/web/**',
+		style: './app/style/**/*.less'
+	}
+};
 var gulp = require('gulp');
 var fs = require('fs');
 var path = require('path');
 var browserSync = require('browser-sync');
 var browserify = require('browserify');
+var cp = require('child_process');
+var watchify = require('watchify');
+var source = require('vinyl-source-stream');
+var babel = require('gulp-babel');
 var babelify = require('babelify');
 var notify = require('gulp-notify');
-var babel = require('gulp-babel');
-var cp = require('child_process');
-var source = require('vinyl-source-stream');
-var watchify = require('watchify');
-// var dirRoute = require('./tools/dirRoute');
-var bidconf = require('./httpServer/conf').build;
-var file = require('./tools/file');
+var less = require('gulp-less');
+var path = require('path');
+var minifyCSS = require('gulp-minify-css');
+var buildconf = require('./httpServer/conf').build;
+var file = require('./gulp/lib/file');
 
-gulp.task('default',['buildServer', 'buildClient'], function(){
-	cp.fork('httpServer/httpd.js', {
-		silent: false
-	});
-});
+gulp.task('browserifyCode', function(callback){
 
-gulp.task('buildServer', function(){
-  return gulp.src(bidconf._render.srcDir)
-    .pipe(babel())
-    .pipe(gulp.dest(bidconf._render.outDir));
-});
-
-gulp.task('buildClient', function(callback){
-	/*
-	 *	map layout-path for browserify's enteris
- 	 */
 	var layoutPath = './src/layout';
 	fs.readdir(layoutPath, function(err, file){
 		if (err) {
 			console.log(err);
 		} else {
 			var layoutMap = [];
-			for (var i = 0; i < file.length - 1; i++) {
+			for (var i = 0; i < file.length; i++) {
 				if (fs.statSync(path.join(__dirname, './src/layout', file[i])).isDirectory()) {
 					var cosdir = {};
 					cosdir.entries = './' + file[i] + '/' + file[i] + '.jsx';
 					cosdir.outputName = file[i] + '.js';
-					layoutMap[i] = cosdir;
+					layoutMap.push(cosdir);
 				};
 			}
-			console.log(layoutMap);
+
 			var bundleQueue = layoutMap.length;
 			var browserifyThis = function(layoutMap){
-				// var bundler = browserify({
-				// 	basedir: bidconf._browserify.basedir,
-				// 	entries: layoutMap.entries,
-				// 	extensions: bidconf._browserify.extensions,
-				// 	debug: bidconf._browserify.debug,
-				// 	cache: {}, packageCache: {}, fullPath: false,
-				// });
-
-var bundler = browserify();
+				var bundler = browserify({
+					cache: {}, packageCache: {}, fullPath: false,
+					basedir: buildconf._browserify.basedir,
+					entries: layoutMap.entries,
+					extensions: buildconf._browserify.extensions,
+					debug: buildconf._browserify.debug
+				});
 
 				var bundle = function(){
 					return bundler
@@ -77,19 +76,16 @@ var bundler = browserify();
 							this.emit('end');
 						})
 						.pipe(source(layoutMap.outputName))
-						.pipe(gulp.dest(bidconf._browserify.outDir))
+						.pipe(gulp.dest(buildconf._browserify.outDir))
 						.on('end', reportFinished);
 				};
 
-				bundler.transform(babelify());
+				bundler.transform(babelify.configure());
 
-				// if (config.global.isWatching) {
-				// 	bundler = watchify(bundler);
-				// 	bundler.on('update', bundle);
-				// };
-				
-				bundler = watchify(bundler);
-				bundler.on('update', bundle);
+				if (config.global.isWatching) {
+					bundler = watchify(bundler);
+					bundler.on('update', bundle);
+				};
 
 				var reportFinished = function(){
 					if (bundleQueue) {
@@ -106,5 +102,71 @@ var bundler = browserify();
 			layoutMap.forEach(browserifyThis);
 		}
 	});
-
 })
+
+gulp.task('buildPage', ['browserifyCode']);
+
+gulp.task('buildReactHandle', function(){
+	browserify(buildconf._reacthandle.entries)
+		.transform(babelify)
+		.bundle()
+		.on('error', function(){
+			var args = Array.prototype.slice.call(arguments);
+
+			notify.onError({
+				title: "Compile Error",
+				message: "<%= error.message %>"
+			}).apply(this, args);
+
+			this.emit('end');
+		})
+		.pipe(source(buildconf._reacthandle.outputName))
+		.pipe(gulp.dest(buildconf._reacthandle.outDir));
+})
+
+// gulp.task('runBrowserSync', ['buildPage'], function(){
+// 	browserSync(config.browserSync);
+// })
+
+// gulp.task('lessToCSS', function(){
+// 	if (config.global.isMinifyCSS) {
+// 		return gulp.src(config.markup.style)
+// 			.pipe(less())
+// 			.on('error', function(){
+// 						var args = Array.prototype.slice.call(arguments);
+
+// 						notify.onError({
+// 							title: "Compile Error",
+// 							message: "<%= error.message %>"
+// 						}).apply(this, args);
+
+// 						this.emit('end');
+// 					})
+// 			.pipe(minifyCSS())
+// 			.pipe(gulp.dest(config.app.build));
+// 	} else {
+// 		return gulp.src(config.markup.style)
+// 			.pipe(less())
+// 			.on('error', function(){
+// 						var args = Array.prototype.slice.call(arguments);
+
+// 						notify.onError({
+// 							title: "Compile Error",
+// 							message: "<%= error.message %>"
+// 						}).apply(this, args);
+
+// 						this.emit('end');
+// 					})
+// 			.pipe(gulp.dest(config.app.build));
+// 	}
+// })
+
+// gulp.task('watchFiles', ['runBrowserSync'], function(){
+// 	gulp.watch(config.app.src);
+// })
+
+gulp.task('default', ['buildPage', 'buildReactHandle'], function(){
+	cp.fork('httpServer/httpd.js', {
+		silent: false
+	});
+});

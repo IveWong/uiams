@@ -5,9 +5,6 @@
  * MIT Licensed
  */
 
-
-// var dirRoute = require('../tools/dirRoute');
-
 module.exports = {
 	server: {
 		port: 5000
@@ -16,9 +13,10 @@ module.exports = {
 		rootPath: 'src/layout'
 	},
 	build: {
-		_render: {
-			srcDir: ['httpServer/render.js', 'httpServer/router.js'],
-			outDir: 'build'
+		_reacthandle: {
+			entries: './httpServer/reactRender.js',
+			outDir: 'build',
+			outputName: 'reactRender.js'
 		},
 		_client: {
 			srcPath: 'src/layout/Index.js',
