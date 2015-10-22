@@ -10,10 +10,17 @@ var React = require('react');
 
 var HtmlContext = React.createClass({
   propTypes:{
-    _child: React.PropTypes.element
+  	title: React.PropTypes.string,
+    bodyContent: React.PropTypes.string.isRequired
   },
   render: function(){
-    return React.createElement('html', {}, this.props._child);
+    return React.createElement('html', {className: 'no-js', lang: ''},
+    	React.createElement('head', null,
+    		React.createElement('meta', {charSet: 'utf-8'}),
+    		React.createElement('title', null, this.props.title)
+    	),
+    	React.createElement('body', {dangerouslySetInnerHTML: { __html: this.props.bodyContent }})
+    );
   }
 });
 
