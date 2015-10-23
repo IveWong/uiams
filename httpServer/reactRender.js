@@ -18,8 +18,9 @@ module.exports = function reactRender(){
 		var resData = { bodyContent: '' };
 		var context = { hello: 'world'};
 		yield reactRoutes.dispatch({ path: this.request.url }, (state, component) => {
-			// console.log(component);
+			console.log(component.render);
 			resData.bodyContent = ReactDOMServer.renderToString(component);
+			console.log("bodyContent is:" + resData.bodyContent);
 		});
 		this.type = 'text/html';
 		this.body = '<!doctype html>\n' + ReactDOMServer.renderToStaticMarkup(React.createElement(HtmlContext, resData));

@@ -1,6 +1,6 @@
 var config = {
 	global: {
-		isWatching: true,
+		isWatching: false,
 		isMinifyCSS: false
 	},
 	browserSync: {
